@@ -1,7 +1,6 @@
 package com.pluralsight;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 
 public class FileManager {
 
@@ -17,12 +16,12 @@ public class FileManager {
 
             String firstLine = br.readLine();
 
-            String[] dealershipParts =
+            String[] dealershipInfo =
                     firstLine.split("\\|");
 
-            String name = dealershipParts[0];
-            String address = dealershipParts[1];
-            String phone = dealershipParts[2];
+            String name = dealershipInfo[0];
+            String address = dealershipInfo[1];
+            String phone = dealershipInfo[2];
 
             dealership =
                     new Dealership(name, address, phone);
@@ -59,8 +58,9 @@ public class FileManager {
 
             br.close();
 
-        } catch (IOException e) {
-            System.out.println("Error reading file.");
+        } catch (Exception e) {
+
+            System.out.println("Error loading inventory.");
         }
 
         return dealership;
@@ -68,5 +68,39 @@ public class FileManager {
 
     public void saveDealership(Dealership dealership) {
 
+        try {
+
+            PrintWriter pw =
+                    new PrintWriter("inventory.csv");
+
+            pw.println(
+                    dealership.getName() + "|" +
+                            dealership.getAddress() + "|" +
+                            dealership.getPhone()
+            );
+
+            List<Vehicle> vehicles =
+                    dealership.getAllVehicles();
+
+            for (Vehicle vehicle : vehicles) {
+
+                pw.println(
+                        vehicle.getVin() + "|" +
+                                vehicle.getYear() + "|" +
+                                vehicle.getMake() + "|" +
+                                vehicle.getModel() + "|" +
+                                vehicle.getVehicleType() + "|" +
+                                vehicle.getColor() + "|" +
+                                vehicle.getOdometer() + "|" +
+                                vehicle.getPrice()
+                );
+            }
+
+            pw.close();
+
+        } catch (Exception e) {
+
+            System.out.println("Error saving inventory.");
+        }
     }
 }
